@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue - MINISTER'S DEKO</title>
+    <link rel="stylesheet" href="Css/style.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">MINISTER'S DEKO</div>
+    <nav id="nav">
+        <a href="index.html">Accueil</a>
+        <a href="catalogue.html">Catalogue</a>
+        <a href="about.html">À propos</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+</header>
+
+<section class="section">
+    <div class="toolbar">
+        <input type="text" id="searchInput" placeholder="Rechercher un produit">
+        <select id="priceFilter" onchange="filterByPrice()">
+            <option value="all">Tous les prix</option>
+            <option value="low">Moins de 200 000</option>
+            <option value="mid">250 000 - 350 000</option>
+            <option value="high">Plus de 350 000</option>
+        </select>
+    </div>
+
+    <div id="filters">
+        <button onclick="filterCategory('all')">Tout</button>
+        <button onclick="filterCategory('cuisine')">Cuisine</button>
+        <button onclick="filterCategory('placard')">Placard</button>
+    </div>
+
+    <div id="product" class="grid"></div>
+    <div id="pagination"></div>
+</section>
+
+<a href="https://wa.me/237652173188" class="whatsapp-float">💬</a>
+
+<script src="js/products.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
