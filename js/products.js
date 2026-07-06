@@ -423,5 +423,182 @@ const products = [
         description: "Prix sur dimensionnement et au choix",
         image: "images/125.jpeg"
     },
+     {
+        id: 54,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/50.jpg"
+    },
+     {
+        id: 55,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/51.jpg"
+    },
+     {
+        id: 56,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/52.jpg"
+    },
+     {
+        id: 57,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/53.jpg"
+    },
+     {
+        id: 58,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/54.jpg"
+    },
+     {
+        id: 59,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/55.jpg"
+    },
+     {
+        id: 60,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/56.jpg"
+    },
+     {
+        id: 61,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/57.jpg"
+    },
+     {
+        id: 62,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/58.jpg"
+    },
+     {
+        id: 63,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/59.jpg"
+    },
+     {
+        id: 64,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/60.jpg"
+    },
+     {
+        id: 65,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/62.jpg"
+    },
+     {
+        id: 66,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/63.jpg"
+    },
+     {
+        id: 67,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/64.jpg"
+    },
+     {
+        id: 68,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/65.jpg"
+    },
+     {
+        id: 69,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/66.jpg"
+    },
+    {
+        id: 70,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/67.jpg"
+    },
+    {
+        id: 71,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/68.jpg"
+    },
+    {
+        id: 72,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/69.jpg"
+    },
+    {
+        id: 73,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/70.jpg"
+    },
+    {
+        id: 74,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/81.jpg"
+    },
+    {
+        id: 75,
+        name: "Meuble TV",
+        category: "placard",
+        price: 0,
+        description: "Prix sur dimensionnement et au choix",
+        image: "images/82.jpg"
+    },
+     
     
 ];
