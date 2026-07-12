@@ -21,24 +21,25 @@
 
 <section class="section">
     <div class="toolbar">
-        <input type="text" id="searchInput" placeholder="Rechercher un produit">
-        <select id="priceFilter" onchange="filterByPrice()">
-            <option value="all">Tous les prix</option>
-            <option value="low">Moins de 200 000</option>
-            <option value="mid">250 000 - 350 000</option>
-            <option value="high">Plus de 350 000</option>
-        </select>
-    </div>
+    <input type="text" id="searchInput" placeholder="Rechercher un produit">
+    <select id="priceFilter">
+        <option value="all">Tous les prix</option>
+        <option value="low">Moins de 200 000</option>
+        <option value="mid">200 000 - 350 000</option>
+        <option value="high">Plus de 350 000</option>
+    </select>
+</div>
 
-    <div id="filters">
-        <button onclick="filterCategory('all')">Tout</button>
-        <button onclick="filterCategory('cuisine')">Cuisine moderne</button>
-        <button onclick="filterCategory('meuble')">Meuble Tv</button>
-        <button onclick="filterCategory('dressing')">Dressing</button>
-    </div>
+<div id="filters">
+    <button class="filter-btn active" data-cat="all">Tout</button>
+    <button class="filter-btn" data-cat="cuisine">Cuisine moderne</button>
+    <button class="filter-btn" data-cat="meuble">Meuble Tv</button>
+    <button class="filter-btn" data-cat="dressing">Dressing</button>
+</div>
 
-    <div id="product" class="grid"></div>
-    <div id="pagination"></div>
+<p id="resultsCount" class="results-count"></p>
+<div id="product" class="grid"></div>
+<div id="pagination"></div>
 </section>
 
 <a href="https://wa.me/237652173188" class="whatsapp-float">💬</a>

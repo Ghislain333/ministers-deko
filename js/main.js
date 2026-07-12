@@ -2,86 +2,198 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    let currentProducts = [];
+    const PRODUCTS_PER_PAGE = 12;
 
-    /* NAV MOBILE */
+    const state = {
+        search: "",
+        category: "all",
+        price: "all",
+        page: 1
+    };
+
+    /* ─── UTILITAIRES ───────────────────────────────────── */
+    function debounce(fn, delay) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn(...args), delay);
+        };
+    }
+
+    function formatPrice(price) {
+        return price > 0
+            ? `${price.toLocaleString("fr-FR")} FCFA`
+            : "Prix sur devis";
+    }
+
+    /* ─── NAV MOBILE ────────────────────────────────────── */
     const nav    = document.getElementById("nav");
     const toggle = document.getElementById("menu-toggle");
 
     if (toggle && nav) {
+        toggle.setAttribute("aria-expanded", "false");
+
         toggle.addEventListener("click", () => {
-            nav.classList.toggle("active");
+            const isOpen = nav.classList.toggle("active");
+            toggle.setAttribute("aria-expanded", String(isOpen));
+            toggle.textContent = isOpen ? "✕" : "☰";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (nav.classList.contains("active") &&
+                !nav.contains(e.target) &&
+                !toggle.contains(e.target)) {
+                nav.classList.remove("active");
+                toggle.setAttribute("aria-expanded", "false");
+                toggle.textContent = "☰";
+            }
         });
     }
 
-    /* AFFICHAGE PRODUITS */
-    function displayProducts(list) {
-        const container = document.getElementById("product");
-        if (!container) return;
+    /* ─── CATALOGUE : uniquement si la page en a besoin ─── */
+    const productContainer = document.getElementById("product");
 
-        container.innerHTML = "";
+    if (productContainer && typeof products !== "undefined") {
 
-        if (list.length === 0) {
-            container.innerHTML = "<p>Aucun produit trouvé.</p>";
-            return;
+        function getFilteredProducts() {
+            let list = [...products];
+
+            if (state.category !== "all") {
+                list = list.filter(p => p.category === state.category);
+            }
+
+            if (state.price !== "all") {
+                // Les articles "sur devis" (prix = 0) ne sont pas comparables
+                // à une fourchette de prix : on les exclut de ce filtre.
+                list = list.filter(p => p.price > 0);
+                if (state.price === "low")  list = list.filter(p => p.price < 200000);
+                if (state.price === "mid")  list = list.filter(p => p.price >= 200000 && p.price <= 350000);
+                if (state.price === "high") list = list.filter(p => p.price > 350000);
+            }
+
+            const q = state.search.trim().toLowerCase();
+            if (q) {
+                list = list.filter(p =>
+                    p.name.toLowerCase().includes(q) ||
+                    p.description.toLowerCase().includes(q)
+                );
+            }
+
+            return list;
         }
 
-        list.forEach(p => {
-            container.innerHTML += `
+        function displayProducts(list) {
+            if (list.length === 0) {
+                productContainer.innerHTML =
+                    `<p class="empty-state">Aucun produit trouvé. Essayez une autre recherche ou réinitialisez les filtres.</p>`;
+                return;
+            }
+
+            productContainer.innerHTML = list.map(p => `
                 <div class="card fade-in">
-                    <img src="${p.image}" alt="${p.name}">
+                    <img src="${p.image}" alt="${p.name}" loading="lazy">
                     <h3>${p.name}</h3>
-                    <p>${p.price.toLocaleString()} FCFA</p>
+                    <p class="price ${p.price === 0 ? "price--quote" : ""}">${formatPrice(p.price)}</p>
                     <a href="product.html?id=${p.id}" class="btn">Voir</a>
                 </div>
-            `;
-        });
+            `).join("");
 
-        initAnimation();
-    }
-
-    /* INIT PRODUITS */
-    if (typeof products !== "undefined") {
-        currentProducts = [...products];
-        displayProducts(currentProducts);
-    }
-
-    /* FILTRE CATEGORIE */
-    window.filterCategory = function(cat) {
-        if (cat === "all") {
-            currentProducts = [...products];
-        } else {
-            currentProducts = products.filter(p => p.category === cat);
+            initAnimation();
         }
-        displayProducts(currentProducts);
-    };
 
-    /* RECHERCHE */
-    const searchInput = document.getElementById("searchInput");
-    if (searchInput) {
-        searchInput.addEventListener("input", function() {
-            const value = this.value.toLowerCase();
-            const filtered = products.filter(p =>
-                p.name.toLowerCase().includes(value)
+        function renderResultsCount(total) {
+            const el = document.getElementById("resultsCount");
+            if (!el) return;
+            el.textContent = total > 0
+                ? `${total} produit${total > 1 ? "s" : ""} trouvé${total > 1 ? "s" : ""}`
+                : "";
+        }
+
+        function createPageButton(label, page, { disabled = false, isActive = false } = {}) {
+            const btn = document.createElement("button");
+            btn.textContent = label;
+            btn.disabled = disabled;
+            if (isActive) {
+                btn.classList.add("active");
+                btn.setAttribute("aria-current", "page");
+            }
+            btn.addEventListener("click", () => {
+                state.page = page;
+                render();
+                productContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+            return btn;
+        }
+
+        function renderPagination(totalItems) {
+            const container = document.getElementById("pagination");
+            if (!container) return;
+
+            container.innerHTML = "";
+            const totalPages = Math.ceil(totalItems / PRODUCTS_PER_PAGE);
+            if (totalPages <= 1) return;
+
+            container.appendChild(
+                createPageButton("‹", state.page - 1, { disabled: state.page === 1 })
             );
-            displayProducts(filtered);
+
+            for (let i = 1; i <= totalPages; i++) {
+                container.appendChild(
+                    createPageButton(i, i, { isActive: i === state.page })
+                );
+            }
+
+            container.appendChild(
+                createPageButton("›", state.page + 1, { disabled: state.page === totalPages })
+            );
+        }
+
+        function render() {
+            const filtered = getFilteredProducts();
+            const start = (state.page - 1) * PRODUCTS_PER_PAGE;
+            const pageItems = filtered.slice(start, start + PRODUCTS_PER_PAGE);
+
+            displayProducts(pageItems);
+            renderResultsCount(filtered.length);
+            renderPagination(filtered.length);
+        }
+
+        /* Filtres catégorie (boutons data-cat) */
+        const filterButtons = document.querySelectorAll(".filter-btn");
+        filterButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                filterButtons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                state.category = btn.dataset.cat;
+                state.page = 1;
+                render();
+            });
         });
+
+        /* Filtre prix */
+        const priceFilter = document.getElementById("priceFilter");
+        if (priceFilter) {
+            priceFilter.addEventListener("change", () => {
+                state.price = priceFilter.value;
+                state.page = 1;
+                render();
+            });
+        }
+
+        /* Recherche (avec debounce pour éviter de re-render à chaque frappe) */
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+            searchInput.addEventListener("input", debounce((e) => {
+                state.search = e.target.value;
+                state.page = 1;
+                render();
+            }, 250));
+        }
+
+        render();
     }
 
-    /* FILTRE PRIX */
-    window.filterByPrice = function() {
-        const select = document.getElementById("priceFilter").value;
-
-        let filtered = [...products];
-
-        if (select === "low")  filtered = products.filter(p => p.price < 100000);
-        if (select === "mid")  filtered = products.filter(p => p.price >= 100000 && p.price <= 200000);
-        if (select === "high") filtered = products.filter(p => p.price > 200000);
-
-        displayProducts(filtered);
-    };
-
-    /* DETAIL PRODUIT */
+    /* ─── DETAIL PRODUIT ────────────────────────────────── */
     const params = new URLSearchParams(window.location.search);
     const id     = params.get("id");
     const detail = document.getElementById("productDetail");
@@ -90,7 +202,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const p = products.find(x => x.id == id);
 
         if (p) {
-            const message = `Bonjour, je suis intéressé(e) par ${p.name} à ${p.price.toLocaleString()} FCFA`;
+            // URL absolue de la photo : WhatsApp génère un aperçu miniature
+            // automatiquement quand le message contient un lien direct vers une image.
+            const imageUrl = new URL(p.image, window.location.href).href;
+
+            const message =
+                `Bonjour, je suis intéressé(e) par ce produit :\n` +
+                `${p.name}` +
+                (p.price > 0 ? ` - ${p.price.toLocaleString("fr-FR")} FCFA` : " - Prix sur devis") +
+                `\n${imageUrl}`;
+
             const whatsappUrl = "https://api.whatsapp.com/send?phone=237652173188&text=" +
                 encodeURIComponent(message);
 
@@ -100,19 +221,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="product-info">
                         <h2>${p.name}</h2>
                         <p>${p.description}</p>
-                        <h3>${p.price.toLocaleString()} FCFA</h3>
-                        <a class="btn" href="${whatsappUrl}" target="_blank">
+                        <h3>${formatPrice(p.price)}</h3>
+                        <a class="btn" href="${whatsappUrl}" target="_blank" rel="noopener">
                             Commander sur WhatsApp
                         </a>
                     </div>
                 </div>
             `;
         } else {
-            detail.innerHTML = "<p>Produit introuvable.</p>";
+            detail.innerHTML = "<p class=\"empty-state\">Produit introuvable.</p>";
         }
     }
 
-    /* ANIMATION FADE-IN */
+    /* ─── ANIMATION FADE-IN ─────────────────────────────── */
     function initAnimation() {
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
