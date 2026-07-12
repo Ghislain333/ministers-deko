@@ -9,24 +9,24 @@ const products = [
     },
     {
         id: 2,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 300000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/01.jpeg"
     },
     {
         id: 3,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 220000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/02.jpeg"
     },
     {
         id: 4,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 400000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/03.jpeg"
@@ -50,7 +50,7 @@ const products = [
     {
         id: 7,
         name: "Meble TV avec plaque formalisée, tasseaux applique et rangements 5 étagère  ",
-        category: "placard",
+        category: "meuble",
         price: 400000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/07.jpeg"
@@ -58,7 +58,7 @@ const products = [
     {
         id: 8,
         name: "Meuble Tv",
-        category: "placard",
+        category: "meuble",
         price: 350000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/08.jpeg"
@@ -89,48 +89,48 @@ const products = [
     },
     {
         id: 12,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 200000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/18.jpeg"
     },
     {
         id: 13,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 500000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/23.jpeg"
     },
     {
         id: 14,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 400000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/24.jpeg"
     },
     {
         id: 15,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/137.jpg"
     },
     {
        id: 16,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 550000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/30.jpeg"
     },
     {
        id: 17,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 500000,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/31.jpeg"
@@ -138,22 +138,22 @@ const products = [
     {
        id: 18,
         name: "Placard formalisée",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/100.jpeg"
     },
     {
        id: 19,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/101.jpeg"
     },
     {
        id: 20,
-        name: "Placard formalisée",
+        name: "Meuble TV",
         category: "placard",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
@@ -161,7 +161,7 @@ const products = [
     },
     {
        id: 21,
-        name: "Placard formalisée",
+        name: "Meuble TV",
         category: "placard",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
@@ -169,15 +169,15 @@ const products = [
     },
     {
        id: 22,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/104.jpeg"
     },
     {
        id: 23,
-        name: "Placard formalisée",
+        name: "Meuble TV",
         category: "placard",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
@@ -185,7 +185,7 @@ const products = [
     },
     {
        id: 24,
-        name: "Placard formalisée",
+        name: "Meuble TV",
         category: "placard",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
@@ -193,16 +193,16 @@ const products = [
     },
      {
        id: 25,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/107.jpeg"
     },
      {
        id: 26,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/108.jpeg"
@@ -210,39 +210,39 @@ const products = [
      {
        id: 27,
         name: "Placard formalisée",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/109.jpeg"
     },
      {
        id: 28,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/110.jpeg"
     },
      {
        id: 29,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/111.jpeg"
     },
      {
        id: 30,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/112.jpeg"
     },
      {
        id: 31,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/113.jpeg"
@@ -250,7 +250,7 @@ const products = [
      {
        id: 32,
         name: "Placard formalisée",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/114.jpeg"
@@ -258,22 +258,22 @@ const products = [
      {
        id: 33,
         name: "Placard formalisée",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/115.jpeg"
     },
      {
        id: 34,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/116.jpeg"
     },
      {
        id: 35,
-        name: "Placard formalisée",
+        name: "Meuble TV",
         category: "placard",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
@@ -281,8 +281,8 @@ const products = [
     },
      {
        id: 36,
-        name: "Placard formalisée",
-        category: "placard",
+        name: "Meuble TV",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/118.jpeg"
@@ -290,7 +290,7 @@ const products = [
      {
        id: 37,
         name: "Placard formalisée",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
         image: "images/119.jpeg"
@@ -306,14 +306,14 @@ const products = [
      {
        id: 39,
         name: "Cuisine sur mesure",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/121.jpeg"
     },
     {
         id: 40,
-        name: "Placard formalisée",
+        name: "Meuble TV",
         category: "plaqcard",
         price: 0,
         description: "Simple couleur au choix, Dimension au choix",
@@ -338,7 +338,7 @@ const products = [
     {
         id: 43,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/128.jpeg"
@@ -346,7 +346,7 @@ const products = [
      {
         id: 44,
         name: "placard formalisée",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/126.jpeg"
@@ -354,7 +354,7 @@ const products = [
      {
         id: 45,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/127.jpeg"
@@ -418,7 +418,7 @@ const products = [
      {
         id: 53,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/125.jpeg"
@@ -426,7 +426,7 @@ const products = [
      {
         id: 54,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/50.jpg"
@@ -434,7 +434,7 @@ const products = [
      {
         id: 55,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/51.jpg"
@@ -442,7 +442,7 @@ const products = [
      {
         id: 56,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/52.jpg"
@@ -450,7 +450,7 @@ const products = [
      {
         id: 57,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/53.jpg"
@@ -458,7 +458,7 @@ const products = [
      {
         id: 58,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/54.jpg"
@@ -466,7 +466,7 @@ const products = [
      {
         id: 59,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/55.jpg"
@@ -474,7 +474,7 @@ const products = [
      {
         id: 60,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/56.jpg"
@@ -482,7 +482,7 @@ const products = [
      {
         id: 61,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/57.jpg"
@@ -490,7 +490,7 @@ const products = [
      {
         id: 62,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/58.jpg"
@@ -498,7 +498,7 @@ const products = [
      {
         id: 63,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/59.jpg"
@@ -506,7 +506,7 @@ const products = [
      {
         id: 64,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/60.jpg"
@@ -514,7 +514,7 @@ const products = [
      {
         id: 65,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/62.jpg"
@@ -522,7 +522,7 @@ const products = [
      {
         id: 66,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/63.jpg"
@@ -530,7 +530,7 @@ const products = [
      {
         id: 67,
         name: "Meuble TV",
-        category: "placard",
+        category: meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/64.jpg"
@@ -538,7 +538,7 @@ const products = [
      {
         id: 68,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/65.jpg"
@@ -546,7 +546,7 @@ const products = [
      {
         id: 69,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/66.jpg"
@@ -554,7 +554,7 @@ const products = [
     {
         id: 70,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/67.jpg"
@@ -562,7 +562,7 @@ const products = [
     {
         id: 71,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/68.jpg"
@@ -570,7 +570,7 @@ const products = [
     {
         id: 72,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/69.jpg"
@@ -578,7 +578,7 @@ const products = [
     {
         id: 73,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/70.jpg"
@@ -586,7 +586,7 @@ const products = [
     {
         id: 74,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/81.jpg"
@@ -594,7 +594,7 @@ const products = [
     {
         id: 75,
         name: "Meuble TV",
-        category: "placard",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/82.jpg"
