@@ -530,7 +530,7 @@ const products = [
      {
         id: 67,
         name: "Meuble TV",
-        category: meuble",
+        category: "meuble",
         price: 0,
         description: "Prix sur dimensionnement et au choix",
         image: "images/64.jpg"
