@@ -1,32 +1,12 @@
-<?php
-require_once 'config.php';
-
-// 1. Récupération de l'ID depuis l'URL
-$id = $_GET['id'] ?? null;
-
-if (!$id) {
-    header('Location: catalogue.php');
-    exit;
-}
-
-// 2. Requête BDD pour chercher le produit correspondant
-$stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
-$stmt->execute([$id]);
-$product = $stmt->fetch();
-
-// Redirection si le produit n'existe pas
-if (!$product) {
-    header('Location: catalogue.php');
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($product['nom']) ?> - MINISTER'S DEKO</title>
+    <title>Détails du meuble - MINISTER'S DEKO</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="Css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -42,39 +22,86 @@ if (!$product) {
 </header>
 
 <section class="section">
-    <div class="container" style="display: flex; gap: 40px; flex-wrap: wrap; margin-top: 20px;">
-        <!-- Image du produit -->
-        <div style="flex: 1; min-width: 300px;">
-            <img src="images/uploads/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['nom']) ?>" style="width: 100%; border-radius: 12px; object-fit: cover; max-height: 450px;" onerror="this.src='images/default.jpg'">
-        </div>
-
-        <!-- Informations du produit -->
-        <div style="flex: 1; min-width: 300px;">
-            <h1 style="font-size: 2rem; margin-bottom: 10px;"><?= htmlspecialchars($product['nom']) ?></h1>
-            <p class="price" style="font-size: 1.6rem; color: #25D366; font-weight: bold; margin-bottom: 20px;"><?= htmlspecialchars($product['prix']) ?></p>
-            
-            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <p><strong>Catégorie :</strong> <?= htmlspecialchars($product['categorie']) ?></p>
-                <?php if (!empty($product['materiaux'])): ?>
-                    <p><strong>Matériaux :</strong> <?= htmlspecialchars($product['materiaux']) ?></p>
-                <?php endif; ?>
-                <?php if (!empty($product['dimensions'])): ?>
-                    <p><strong>Dimensions :</strong> <?= htmlspecialchars($product['dimensions']) ?></p>
-                <?php endif; ?>
-            </div>
-
-            <p style="line-height: 1.6; margin-bottom: 30px;"><?= nl2br(htmlspecialchars($product['description'])) ?></p>
-
-            <!-- Bouton de conversion WhatsApp -->
-            <button onclick="commanderWhatsApp('<?= addslashes($product['nom']) ?>', '<?= addslashes($product['prix']) ?>')" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 8px; background-color: #25D366; color: white; font-weight: bold;">
-                Commander ce modèle sur WhatsApp
-            </button>
-        </div>
+    <div id="product-container" class="container" style="display: flex; gap: 40px; flex-wrap: wrap; margin-top: 20px;">
+        <p style="text-align: center; width: 100%;">Chargement des détails du produit...</p>
     </div>
 </section>
 
-<a href="https://wa.me/237652173188" class="whatsapp-float" target="_blank">💬</a>
+<a href="https://wa.me/237652173188" class="whatsapp-float" target="_blank" style="position: fixed; bottom: 20px; right: 20px; font-size: 30px; text-decoration: none;">💬</a>
 
-<script src="js/main.js"></script>
+<script>
+const SUPABASE_URL = 'https://xujwvzaucxgcponznaxa.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_pOywnX7vC3ffYbcn5gCXMg_NQMojr5J';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Récupérer l'ID depuis l'URL (?id=123)
+const urlParams = new URLSearchParams(window.location.search);
+const productId = urlParams.get('id');
+
+if (!productId) {
+    window.location.href = 'catalogue.html';
+}
+
+async function fetchProduct() {
+    const container = document.getElementById('product-container');
+
+    const { data: product, error } = await supabaseClient
+        .from('products')
+        .select('*')
+        .eq('id', productId)
+        .single();
+
+    if (error || !product) {
+        container.innerHTML = '<p style="text-align: center; width: 100%;">Produit introuvable. <a href="catalogue.html">Retour au catalogue</a></p>';
+        return;
+    }
+
+    document.title = `${escapeHtml(product.nom)} - MINISTER'S DEKO`;
+
+    const imageUrl = product.image.startsWith('http') 
+        ? product.image 
+        : `${SUPABASE_URL}/storage/v1/object/public/products-images/${product.image}`;
+
+    container.innerHTML = `
+        <div style="flex: 1; min-width: 300px;">
+            <img src="${imageUrl}" alt="${escapeHtml(product.nom)}" style="width: 100%; border-radius: 12px; object-fit: cover; max-height: 450px;" onerror="this.src='images/default.jpg'">
+        </div>
+
+        <div style="flex: 1; min-width: 300px;">
+            <h1 style="font-size: 2rem; margin-bottom: 10px;">${escapeHtml(product.nom)}</h1>
+            <p class="price" style="font-size: 1.6rem; color: #25D366; font-weight: bold; margin-bottom: 20px;">${escapeHtml(product.prix)}</p>
+            
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <p><strong>Catégorie :</strong> ${escapeHtml(product.categorie)}</p>
+                ${product.materiaux ? `<p><strong>Matériaux :</strong> ${escapeHtml(product.materiaux)}</p>` : ''}
+                ${product.dimensions ? `<p><strong>Dimensions :</strong> ${escapeHtml(product.dimensions)}</p>` : ''}
+            </div>
+
+            <p style="line-height: 1.6; margin-bottom: 30px;">${escapeHtml(product.description).replace(/\n/g, '<br>')}</p>
+
+            <button onclick="commanderWhatsApp('${addslashes(product.nom)}', '${addslashes(product.prix)}')" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 8px; background-color: #25D366; color: white; font-weight: bold;">
+                Commander ce modèle sur WhatsApp
+            </button>
+        </div>
+    `;
+}
+
+function escapeHtml(str) {
+    return (str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+}
+function addslashes(str) {
+    return (str || '').replace(/[\\']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
+function commanderWhatsApp(nom, prix) {
+    const message = encodeURIComponent(`Bonjour, je suis intéressé par le produit "${nom}" (${prix}) vu sur votre catalogue.`);
+    window.open(`https://wa.me/237652173188?text=${message}`, '_blank');
+}
+
+document.getElementById('menu-toggle')?.addEventListener('click', () => {
+    document.getElementById('nav')?.classList.toggle('active');
+});
+
+document.addEventListener('DOMContentLoaded', fetchProduct);
+</script>
 </body>
 </html>
