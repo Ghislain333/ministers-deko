@@ -183,7 +183,7 @@ async function loadProducts() {
     }
 
     tbody.innerHTML = products.map(p => {
-        cconst imageUrl = p.image.startsWith('http') 
+        const imageUrl = p.image.startsWith('http') 
     ? p.image 
     : (p.image.startsWith('images/') 
         ? `../${p.image}` 
