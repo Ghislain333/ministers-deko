@@ -82,26 +82,37 @@ function renderProducts(items) {
         return;
     }
 
-    grid.innerHTML = items.map(item => `
-        <div class="card product-card" data-category="${escapeHtml(item.categorie.toLowerCase())}" data-name="${escapeHtml(item.nom.toLowerCase())}">
-            <img src="${escapeHtml(item.image)}" 
-                 alt="${escapeHtml(item.nom)}" 
-                 loading="lazy" 
-                 onerror="this.src='images/default.jpg'"
-                 style="width:100%; height: 220px; object-fit: cover; border-radius: 8px 8px 0 0;">
-            <div class="card-body" style="padding: 15px;">
-                <h3 style="margin-top: 0;">${escapeHtml(item.nom)}</h3>
-                <p style="font-size: 0.9rem; color: #666;">${escapeHtml(item.description)}</p>
-                <span class="price" style="display: block; font-weight: bold; color: #25D366; margin: 10px 0;">${escapeHtml(item.prix)}</span>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <a href="product.html?id=${item.id}" class="btn btn-dark" style="flex: 1; text-align: center; text-decoration: none; padding: 8px; background: #333; color: #fff; border-radius: 4px;">Détails</a>
-                    <button onclick="commanderWhatsApp('${addslashes(item.nom)}', '${addslashes(item.prix)}')" class="btn btn-primary" style="flex: 1; padding: 8px; background: #25D366; color: white; border: none; border-radius: 4px; cursor: pointer;">WhatsApp</button>
+    grid.innerHTML = items.map(item => {
+        // Détermination dynamique de la source de l'image (locale vs Supabase Storage)
+        let imageUrl = 'images/default.jpg';
+        if (item.image) {
+            if (item.image.startsWith('http') || item.image.startsWith('images/')) {
+                imageUrl = item.image;
+            } else {
+                imageUrl = `${SUPABASE_URL}/storage/v1/object/public/products-images/${item.image}`;
+            }
+        }
+
+        return `
+            <div class="card product-card" data-category="${escapeHtml(item.categorie.toLowerCase())}" data-name="${escapeHtml(item.nom.toLowerCase())}">
+                <img src="${escapeHtml(imageUrl)}" 
+                     alt="${escapeHtml(item.nom)}" 
+                     loading="lazy" 
+                     onerror="this.src='images/default.jpg'"
+                     style="width:100%; height: 220px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                <div class="card-body" style="padding: 15px;">
+                    <h3 style="margin-top: 0;">${escapeHtml(item.nom)}</h3>
+                    <p style="font-size: 0.9rem; color: #666;">${escapeHtml(item.description)}</p>
+                    <span class="price" style="display: block; font-weight: bold; color: #25D366; margin: 10px 0;">${escapeHtml(item.prix)}</span>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <a href="product.html?id=${item.id}" class="btn btn-dark" style="flex: 1; text-align: center; text-decoration: none; padding: 8px; background: #333; color: #fff; border-radius: 4px;">Détails</a>
+                        <button onclick="commanderWhatsApp('${addslashes(item.nom)}', '${addslashes(item.prix)}')" class="btn btn-primary" style="flex: 1; padding: 8px; background: #25D366; color: white; border: none; border-radius: 4px; cursor: pointer;">WhatsApp</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
-
 // Utilitaires de sécurité et d'échappement
 function escapeHtml(str) {
     return (str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
