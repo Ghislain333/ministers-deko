@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogue - MINISTER'S DEKO</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="Css/style.css">
+    <!-- SDK Supabase Client JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -20,31 +23,126 @@
 </header>
 
 <section class="section">
-    <div class="toolbar">
-    <input type="text" id="searchInput" placeholder="Rechercher un produit">
-    <select id="priceFilter">
-        <option value="all">Tous les prix</option>
-        <option value="low">Moins de 200 000</option>
-        <option value="mid">200 000 - 350 000</option>
-        <option value="high">Plus de 350 000</option>
-    </select>
-</div>
+    <div class="toolbar" style="margin-bottom: 20px;">
+        <input type="text" id="searchInput" placeholder="Rechercher un meuble..." style="padding: 10px; width: 100%; max-width: 400px; margin-bottom: 10px;">
+    </div>
 
-<div id="filters">
-    <button class="filter-btn active" data-cat="all">Tout</button>
-    <button class="filter-btn" data-cat="cuisine">Cuisine moderne</button>
-    <button class="filter-btn" data-cat="meuble">Meuble Tv</button>
-    <button class="filter-btn" data-cat="dressing">Dressing</button>
-</div>
+    <div id="filters" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+        <button class="filter-btn active" onclick="filterCategory('all', event)">Tout</button>
+        <button class="filter-btn" onclick="filterCategory('cuisine', event)">Cuisine moderne</button>
+        <button class="filter-btn" onclick="filterCategory('meuble', event)">Meuble Tv</button>
+        <button class="filter-btn" onclick="filterCategory('dressing', event)">Dressing</button>
+    </div>
 
-<p id="resultsCount" class="results-count"></p>
-<div id="product" class="grid"></div>
-<div id="pagination"></div>
+    <!-- Le conteneur JS recevra les cartes dynamiquement -->
+    <div id="product-grid" class="grid">
+        <p style="text-align: center; grid-column: 1/-1; padding: 20px;">Chargement des produits...</p>
+    </div>
 </section>
 
-<a href="https://wa.me/237652173188" class="whatsapp-float">💬</a>
+<a href="https://wa.me/237652173188" class="whatsapp-float" target="_blank" style="position: fixed; bottom: 20px; right: 20px; font-size: 30px; text-decoration: none;">💬</a>
 
-<script src="js/products.js"></script>
-<script src="js/main.js"></script>
+<script>
+// 1. Initialisation Supabase (Remplace avec tes identifiants Supabase)
+const SUPABASE_URL = 'https://xujwvzaucxgcponznaxa.supabase.co/rest/v1/ ';
+const SUPABASE_ANON_KEY = 'sb_publishable_pOywnX7vC3ffYbcn5gCXMg_NQMojr5J';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let allProducts = [];
+
+// 2. Chargement des produits depuis PostgreSQL / Supabase
+async function fetchProducts() {
+    const grid = document.getElementById('product-grid');
+    
+    const { data: products, error } = await supabaseClient
+        .from('products')
+        .select('*')
+        .order('id', { ascending: false });
+
+    if (error) {
+        console.error('Erreur Supabase:', error);
+        grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Erreur lors du chargement des produits.</p>';
+        return;
+    }
+
+    if (!products || products.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 20px;">Aucun produit disponible pour le moment.</p>';
+        return;
+    }
+
+    allProducts = products;
+    renderProducts(allProducts);
+}
+
+// 3. Affichage des cartes produits
+function renderProducts(items) {
+    const grid = document.getElementById('product-grid');
+    if (items.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 20px;">Aucun produit ne correspond à votre recherche.</p>';
+        return;
+    }
+
+    grid.innerHTML = items.map(item => `
+        <div class="card product-card" data-category="${escapeHtml(item.categorie.toLowerCase())}" data-name="${escapeHtml(item.nom.toLowerCase())}">
+            <img src="images/uploads/${escapeHtml(item.image)}" 
+                 alt="${escapeHtml(item.nom)}" 
+                 loading="lazy" 
+                 onerror="this.src='images/default.jpg'"
+                 style="width:100%; height: 220px; object-fit: cover; border-radius: 8px 8px 0 0;">
+            <div class="card-body" style="padding: 15px;">
+                <h3 style="margin-top: 0;">${escapeHtml(item.nom)}</h3>
+                <p style="font-size: 0.9rem; color: #666;">${escapeHtml(item.description)}</p>
+                <span class="price" style="display: block; font-weight: bold; color: #25D366; margin: 10px 0;">${escapeHtml(item.prix)}</span>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <a href="product.html?id=${item.id}" class="btn btn-dark" style="flex: 1; text-align: center; text-decoration: none; padding: 8px; background: #333; color: #fff; border-radius: 4px;">Détails</a>
+                    <button onclick="commanderWhatsApp('${addslashes(item.nom)}', '${addslashes(item.prix)}')" class="btn btn-primary" style="flex: 1; padding: 8px; background: #25D366; color: white; border: none; border-radius: 4px; cursor: pointer;">WhatsApp</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Utilitaires de sécurité et d'échappement
+function escapeHtml(str) {
+    return (str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+}
+function addslashes(str) {
+    return (str || '').replace(/[\\']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
+
+// Menu Mobile & WhatsApp
+document.getElementById('menu-toggle')?.addEventListener('click', () => {
+    document.getElementById('nav')?.classList.toggle('active');
+});
+
+function commanderWhatsApp(nom, prix) {
+    const message = encodeURIComponent(`Bonjour, je suis intéressé par le produit "${nom}" (${prix}) vu sur votre catalogue.`);
+    window.open(`https://wa.me/237652173188?text=${message}`, '_blank');
+}
+
+// Recherche instantanée
+document.getElementById('searchInput')?.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    const filtered = allProducts.filter(p => p.nom.toLowerCase().includes(query));
+    renderProducts(filtered);
+});
+
+// Filtres par catégories
+function filterCategory(cat, event) {
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    if (event) event.target.classList.add('active');
+
+    if (cat === 'all') {
+        renderProducts(allProducts);
+    } else {
+        const filtered = allProducts.filter(p => p.categorie.toLowerCase().includes(cat));
+        renderProducts(filtered);
+    }
+}
+
+// Lancement au chargement de la page
+document.addEventListener('DOMContentLoaded', fetchProducts);
+</script>
+
 </body>
 </html>

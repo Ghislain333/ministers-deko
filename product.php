@@ -1,0 +1,80 @@
+<?php
+require_once 'config.php';
+
+// 1. Récupération de l'ID depuis l'URL
+$id = $_GET['id'] ?? null;
+
+if (!$id) {
+    header('Location: catalogue.php');
+    exit;
+}
+
+// 2. Requête BDD pour chercher le produit correspondant
+$stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
+$stmt->execute([$id]);
+$product = $stmt->fetch();
+
+// Redirection si le produit n'existe pas
+if (!$product) {
+    header('Location: catalogue.php');
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= htmlspecialchars($product['nom']) ?> - MINISTER'S DEKO</title>
+    <link rel="stylesheet" href="Css/style.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">MINISTER'S DEKO</div>
+    <nav id="nav">
+        <a href="index.html">Accueil</a>
+        <a href="catalogue.php">Catalogue</a>
+        <a href="about.html">À propos</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+</header>
+
+<section class="section">
+    <div class="container" style="display: flex; gap: 40px; flex-wrap: wrap; margin-top: 20px;">
+        <!-- Image du produit -->
+        <div style="flex: 1; min-width: 300px;">
+            <img src="images/uploads/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['nom']) ?>" style="width: 100%; border-radius: 12px; object-fit: cover; max-height: 450px;" onerror="this.src='images/default.jpg'">
+        </div>
+
+        <!-- Informations du produit -->
+        <div style="flex: 1; min-width: 300px;">
+            <h1 style="font-size: 2rem; margin-bottom: 10px;"><?= htmlspecialchars($product['nom']) ?></h1>
+            <p class="price" style="font-size: 1.6rem; color: #25D366; font-weight: bold; margin-bottom: 20px;"><?= htmlspecialchars($product['prix']) ?></p>
+            
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <p><strong>Catégorie :</strong> <?= htmlspecialchars($product['categorie']) ?></p>
+                <?php if (!empty($product['materiaux'])): ?>
+                    <p><strong>Matériaux :</strong> <?= htmlspecialchars($product['materiaux']) ?></p>
+                <?php endif; ?>
+                <?php if (!empty($product['dimensions'])): ?>
+                    <p><strong>Dimensions :</strong> <?= htmlspecialchars($product['dimensions']) ?></p>
+                <?php endif; ?>
+            </div>
+
+            <p style="line-height: 1.6; margin-bottom: 30px;"><?= nl2br(htmlspecialchars($product['description'])) ?></p>
+
+            <!-- Bouton de conversion WhatsApp -->
+            <button onclick="commanderWhatsApp('<?= addslashes($product['nom']) ?>', '<?= addslashes($product['prix']) ?>')" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 8px; background-color: #25D366; color: white; font-weight: bold;">
+                Commander ce modèle sur WhatsApp
+            </button>
+        </div>
+    </div>
+</section>
+
+<a href="https://wa.me/237652173188" class="whatsapp-float" target="_blank">💬</a>
+
+<script src="js/main.js"></script>
+</body>
+</html>

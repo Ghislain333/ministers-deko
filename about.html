@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>À propos - MINISTER'S DEKO</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="Css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -19,31 +23,43 @@
     <div class="menu-toggle" id="menu-toggle">☰</div>
 </header>
 
-<section class="section fade-in">
+<section class="section">
     <h1>À propos</h1>
     <p>
-        MINISTER'S DEKO conçoit des meubles sur mesure adaptés à ton espace.
+        MINISTER'S DEKO conçoit des meubles sur mesure adaptés à votre espace.
         Nous travaillons avec des matériaux de qualité pour garantir un rendu durable.
     </p>
     <p>
-        Nos services couvrent la cuisine modern, les meuble Tv et les dressings.
-        Chaque projet est réalisé selon tes besoins.
+        Nos services couvrent la cuisine moderne, les meubles TV, les placards et les dressings.
+        Chaque projet est réalisé selon vos besoins spécifiques.
     </p>
-    <p>Zone d'intervention : <strong>Douala et dans tous le Cameroun.</strong></p>
+    <p>Zone d'intervention : <strong>Douala et dans tout le Cameroun.</strong></p>
 </section>
 
 <section class="section">
-    <p  class="pwq">Pourquoi nous choisir</p>
-    <ul>
-        <li>Travail propre et précis</li>
-        <li>Respect des délais</li>
-        <li>Conseil personnalisé</li>
-        <li>Suivi client rapide sur WhatsApp</li>
-    </ul>
+    <p class="pwq">Pourquoi nous choisir ?</p>
+    <div class="about-grid">
+        <div class="box">
+            <h3>Travail propre et précis</h3>
+            <p>Finition soignée sur chaque meuble.</p>
+        </div>
+        <div class="box">
+            <h3>Respect des délais</h3>
+            <p>Livraison et pose dans le temps convenu.</p>
+        </div>
+        <div class="box">
+            <h3>Conseil personnalisé</h3>
+            <p>Accompagnement selon la disposition de votre pièce.</p>
+        </div>
+    </div>
 </section>
 
-<a href="https://wa.me/237652173188" class="whatsapp-float">💬</a>
+<a href="https://wa.me/237652173188" class="whatsapp-float" target="_blank">💬</a>
 
-<script src="js/main.js"></script>
+<script>
+  document.getElementById('menu-toggle')?.addEventListener('click', function() {
+      document.getElementById('nav')?.classList.toggle('active');
+  });
+</script>
 </body>
 </html>

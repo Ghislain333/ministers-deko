@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../Css/style.css">
+    <title>Administration - MINISTER'S DEKO</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { background-color: #f8f9fa; color: #1b1b1b; font-family: sans-serif; margin: 0; padding: 20px 5%; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; background: #1b1b1b; color: white; padding: 15px 25px; border-radius: 8px; margin-bottom: 25px; }
+        .admin-header h1 { font-size: 1.3rem; margin: 0; }
+        .btn-logout { background: #e74c3c; color: white; text-decoration: none; padding: 8px 16px; border-radius: 5px; font-weight: bold; font-size: 0.85rem; border: none; cursor: pointer; }
+        
+        .form-card { background: white; padding: 25px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .form-card h2 { font-size: 1.2rem; margin-top: 0; margin-bottom: 20px; border-bottom: 2px solid #25D366; padding-bottom: 8px; display: inline-block; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 5px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+        
+        .btn-submit { background: #25D366; color: white; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
+        .btn-submit:hover { opacity: 0.9; }
+
+        .table-responsive { overflow-x: auto; background: white; border-radius: 10px; border: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+        th { background: #f1f5f9; padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .btn-del { color: #e74c3c; text-decoration: none; font-weight: bold; background: #fde8e8; padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer; }
+        .badge-cat { background: #FFD700; color: #1b1b1b; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-header">
+        <h1>MINISTER'S DEKO - Admin</h1>
+        <button id="btn-logout" class="btn-logout">Déconnexion</button>
+    </div>
+
+    <div id="status-box" style="display: none; padding: 12px; border-radius: 6px; margin-bottom: 20px;"></div>
+
+    <!-- Formulaire d'ajout -->
+    <div class="form-card">
+        <h2>Ajouter un nouveau meuble</h2>
+        <form id="add-product-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nom du modèle *</label>
+                    <input type="text" id="nom" required placeholder="ex: Cuisine Émeraude">
+                </div>
+                <div class="form-group">
+                    <label>Catégorie *</label>
+                    <select id="categorie" required>
+                        <option value="Cuisine">Cuisine moderne</option>
+                        <option value="Meuble Tv">Meuble Tv</option>
+                        <option value="Dressing">Dressing</option>
+                        <option value="Placard">Placard</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Prix indicatif *</label>
+                    <input type="text" id="prix" required placeholder="ex: 450 000 FCFA">
+                </div>
+                <div class="form-group">
+                    <label>Matériaux</label>
+                    <input type="text" id="materiaux" placeholder="ex: Bois massif, MDF">
+                </div>
+                <div class="form-group">
+                    <label>Dimensions</label>
+                    <input type="text" id="dimensions" placeholder="ex: Sur-mesure ou 200x150cm">
+                </div>
+                <div class="form-group">
+                    <label>Photo principale *</label>
+                    <input type="file" id="image-file" accept="image/*" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description *</label>
+                <textarea id="description" rows="3" required placeholder="Description détaillée du meuble..."></textarea>
+            </div>
+            <button type="submit" id="submit-btn" class="btn-submit">Publier le produit</button>
+        </form>
+    </div>
+
+    <!-- Liste des meubles -->
+    <h2>Catalogue enregistrés (<span id="count">0</span>)</h2>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Visuel</th>
+                    <th>Nom</th>
+                    <th>Catégorie</th>
+                    <th>Prix</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="products-table-body">
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 20px;">Chargement des meubles...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+<script>
+// Configurations Supabase
+const SUPABASE_URL = 'https://xujwvzaucxgcponznaxa.supabase.co/rest/v1/  ';
+const SUPABASE_ANON_KEY = 'sb_publishable_pOywnX7vC3ffYbcn5gCXMg_NQMojr5J';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// 1. Vérification de session d'accès
+async function checkAuth() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+        window.location.href = 'login.html';
+    } else {
+        loadProducts();
+    }
+}
+checkAuth();
+
+// Déconnexion
+document.getElementById('btn-logout').addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = 'login.html';
+});
+
+// 2. Chargement de la liste des produits
+async function loadProducts() {
+    const tbody = document.getElementById('products-table-body');
+    const countSpan = document.getElementById('count');
+
+    const { data: products, error } = await supabaseClient
+        .from('products')
+        .select('*')
+        .order('id', { ascending: false });
+
+    if (error) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red;">Erreur de chargement.</td></tr>';
+        return;
+    }
+
+    countSpan.textContent = products.length;
+
+    if (products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Aucun meuble enregistré.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = products.map(p => {
+        // Déterminer l'URL de l'image (Supabase Storage ou fallback local)
+        const imageUrl = p.image.startsWith('http') 
+            ? p.image 
+            : `${SUPABASE_URL}/storage/v1/object/public/products-images/${p.image}`;
+
+        return `
+            <tr>
+                <td>
+                    <img src="${imageUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;" onerror="this.src='../images/default.jpg'">
+                </td>
+                <td><strong>${escapeHtml(p.nom)}</strong></td>
+                <td><span class="badge-cat">${escapeHtml(p.categorie)}</span></td>
+                <td style="color: #25D366; font-weight: bold;">${escapeHtml(p.prix)}</td>
+                <td>
+                    <button onclick="deleteProduct(${p.id}, '${p.image}')" class="btn-del">Supprimer</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// 3. Ajout d'un produit avec upload d'image sur Supabase Storage
+document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement...';
+
+    const fileInput = document.getElementById('image-file');
+    const file = fileInput.files[0];
+    let imageFileName = 'default.jpg';
+
+    if (file) {
+        const fileExt = file.name.split('.').pop();
+        imageFileName = `meuble_${Date.now()}.${fileExt}`;
+
+        const { data: uploadData, error: uploadError } = await supabaseClient
+            .storage
+            .from('products-images')
+            .upload(imageFileName, file);
+
+        if (uploadError) {
+            showStatus('⚠️ Erreur lors du téléversement de l\'image.', '#f8d7da', '#842029');
+            btn.disabled = false;
+            btn.textContent = 'Publier le produit';
+            return;
+        }
+    }
+
+    const newProduct = {
+        nom: document.getElementById('nom').value,
+        categorie: document.getElementById('categorie').value,
+        prix: document.getElementById('prix').value,
+        materiaux: document.getElementById('materiaux').value || null,
+        dimensions: document.getElementById('dimensions').value || null,
+        description: document.getElementById('description').value,
+        image: imageFileName
+    };
+
+    const { error } = await supabaseClient.from('products').insert([newProduct]);
+
+    if (error) {
+        showStatus('⚠️ Erreur lors de l\'enregistrement du produit.', '#f8d7da', '#842029');
+    } else {
+        showStatus('✓ Meuble ajouté au catalogue avec succès !', '#d1e7dd', '#0f5132');
+        document.getElementById('add-product-form').reset();
+        loadProducts();
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Publier le produit';
+});
+
+// 4. Suppression d'un produit
+async function deleteProduct(id, imageName) {
+    if (!confirm('Confirmer la suppression ?')) return;
+
+    // Suppression de l'entrée dans la table products
+    const { error } = await supabaseClient.from('products').delete().eq('id', id);
+
+    if (error) {
+        showStatus('⚠️ Erreur lors de la suppression.', '#f8d7da', '#842029');
+    } else {
+        // Tentative de suppression du fichier image dans le storage si présent
+        if (imageName && imageName !== 'default.jpg') {
+            await supabaseClient.storage.from('products-images').remove([imageName]);
+        }
+        showStatus('✓ Meuble supprimé du catalogue.', '#f8d7da', '#842029');
+        loadProducts();
+    }
+}
+
+function showStatus(msg, bg, color) {
+    const box = document.getElementById('status-box');
+    box.textContent = msg;
+    box.style.background = bg;
+    box.style.color = color;
+    box.style.display = 'block';
+    setTimeout(() => { box.style.display = 'none'; }, 4000);
+}
+
+function escapeHtml(str) {
+    return (str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+}
+</script>
+</body>
+</html>

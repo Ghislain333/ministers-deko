@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - MINISTER'S DEKO</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="Css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -19,19 +23,28 @@
     <div class="menu-toggle" id="menu-toggle">☰</div>
 </header>
 
-<section class="section fade-in">
-    <h1>Contact</h1>
-    <p>WhatsApp: +237 652 173 188</p>
-    <a class="btn" href="https://wa.me/237652173188">Discuter sur WhatsApp</a>
+<section class="section" style="text-align: center; padding: 40px 20px;">
+    <h1>Contactez-nous</h1>
+    <p style="font-size: 1.1rem; margin-bottom: 20px;">Besoin d'un devis ou d'une information pour votre projet de meuble ?</p>
+    
+    <div style="background: var(--color-surface); padding: 25px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); max-width: 500px; margin: 0 auto 30px auto;">
+        <p style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">Téléphone / WhatsApp</p>
+        <p style="font-size: 1.1rem; color: var(--color-primary-dark); font-weight: bold; margin-bottom: 20px;">+237 652 173 188</p>
+        <a class="btn" href="https://wa.me/237652173188" target="_blank" style="background: #25D366; color: white; padding: 12px 24px; font-size: 1.1rem; border-radius: 8px; display: inline-block;">Discuter sur WhatsApp</a>
+    </div>
 </section>
 
-<section class="section">
-    <p class="contact" >Zone d'intervention</p>
-    <p>Douala et dans tout le Cameroun</p>
+<section class="section" style="text-align: center; background: #fff; border-radius: var(--radius-md); max-width: 600px; margin: 0 auto 40px auto; padding: 20px;">
+    <p class="contact">Zone d'intervention</p>
+    <p style="font-size: 1.1rem;">Douala et expédition/installation partout au Cameroun.</p>
 </section>
 
-<a href="https://wa.me/237652173188" class="whatsapp-float">💬</a>
+<a href="https://wa.me/237652173188" class="whatsapp-float" target="_blank">💬</a>
 
-<script src="js/main.js"></script>
+<script>
+  document.getElementById('menu-toggle')?.addEventListener('click', function() {
+      document.getElementById('nav')?.classList.toggle('active');
+  });
+</script>
 </body>
 </html>
