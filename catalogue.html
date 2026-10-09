@@ -74,7 +74,7 @@ async function fetchProducts() {
     renderProducts(allProducts);
 }
 
-// 3. Affichage des cartes produits
+// // 3. Affichage des cartes produits
 function renderProducts(items) {
     const grid = document.getElementById('product-grid');
     if (items.length === 0) {
@@ -84,7 +84,7 @@ function renderProducts(items) {
 
     grid.innerHTML = items.map(item => `
         <div class="card product-card" data-category="${escapeHtml(item.categorie.toLowerCase())}" data-name="${escapeHtml(item.nom.toLowerCase())}">
-            <img src="images/uploads/${escapeHtml(item.image)}" 
+            <img src="${escapeHtml(item.image)}" 
                  alt="${escapeHtml(item.nom)}" 
                  loading="lazy" 
                  onerror="this.src='images/default.jpg'"
