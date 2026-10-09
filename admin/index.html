@@ -60,7 +60,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Prix indicatif *</label>
+                    <label>Prix indicatif </label>
                     <input type="text" id="prix" required placeholder="ex: 450 000 FCFA">
                 </div>
                 <div class="form-group">
@@ -128,7 +128,39 @@ document.getElementById('btn-logout').addEventListener('click', async () => {
     window.location.href = 'login.html';
 });
 
-// 2. Chargement de la liste des produits
+// 2. Fonction de compression d'image (gratuite & côté navigateur)
+function compresserImage(file, maxWidth = 1600, quality = 0.75) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth) {
+                    height = Math.round((height * maxWidth) / width);
+                    width = maxWidth;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), { type: 'image/jpeg' }));
+                }, 'image/jpeg', quality);
+            };
+        };
+    });
+}
+
+// 3. Chargement de la liste des produits
 async function loadProducts() {
     const tbody = document.getElementById('products-table-body');
     const countSpan = document.getElementById('count');
@@ -151,10 +183,11 @@ async function loadProducts() {
     }
 
     tbody.innerHTML = products.map(p => {
-        // Déterminer l'URL de l'image (Supabase Storage ou fallback local)
-        const imageUrl = p.image.startsWith('http') 
-            ? p.image 
-            : `${SUPABASE_URL}/storage/v1/object/public/products-images/${p.image}`;
+        cconst imageUrl = p.image.startsWith('http') 
+    ? p.image 
+    : (p.image.startsWith('images/') 
+        ? `../${p.image}` 
+        : `${SUPABASE_URL}/storage/v1/object/public/products-images/${p.image}`);
 
         return `
             <tr>
@@ -172,28 +205,36 @@ async function loadProducts() {
     }).join('');
 }
 
-// 3. Ajout d'un produit avec upload d'image sur Supabase Storage
+// 4. Ajout d'un produit avec compression et téléversement
 document.getElementById('add-product-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
-    btn.textContent = 'Enregistrement...';
+    btn.textContent = 'Compression & Envoi...';
 
     const fileInput = document.getElementById('image-file');
-    const file = fileInput.files[0];
+    let file = fileInput.files[0];
     let imageFileName = 'default.jpg';
 
     if (file) {
-        const fileExt = file.name.split('.').pop();
-        imageFileName = `meuble_${Date.now()}.${fileExt}`;
+        try {
+            // Compression automatique de l'image avant l'envoi
+            file = await compresserImage(file);
+            imageFileName = `meuble_${Date.now()}.jpg`;
 
-        const { data: uploadData, error: uploadError } = await supabaseClient
-            .storage
-            .from('products-images')
-            .upload(imageFileName, file);
+            const { data: uploadData, error: uploadError } = await supabaseClient
+                .storage
+                .from('products-images')
+                .upload(imageFileName, file);
 
-        if (uploadError) {
-            showStatus('⚠️ Erreur lors du téléversement de l\'image.', '#f8d7da', '#842029');
+            if (uploadError) {
+                showStatus('⚠️ Erreur image : ' + uploadError.message, '#f8d7da', '#842029');
+                btn.disabled = false;
+                btn.textContent = 'Publier le produit';
+                return;
+            }
+        } catch (err) {
+            showStatus('⚠️ Erreur de traitement de l\'image.', '#f8d7da', '#842029');
             btn.disabled = false;
             btn.textContent = 'Publier le produit';
             return;
@@ -213,7 +254,7 @@ document.getElementById('add-product-form').addEventListener('submit', async (e)
     const { error } = await supabaseClient.from('products').insert([newProduct]);
 
     if (error) {
-        showStatus('⚠️ Erreur lors de l\'enregistrement du produit.', '#f8d7da', '#842029');
+        showStatus('⚠️ Erreur BDD : ' + error.message, '#f8d7da', '#842029');
     } else {
         showStatus('✓ Meuble ajouté au catalogue avec succès !', '#d1e7dd', '#0f5132');
         document.getElementById('add-product-form').reset();
@@ -224,18 +265,16 @@ document.getElementById('add-product-form').addEventListener('submit', async (e)
     btn.textContent = 'Publier le produit';
 });
 
-// 4. Suppression d'un produit
+// 5. Suppression d'un produit
 async function deleteProduct(id, imageName) {
     if (!confirm('Confirmer la suppression ?')) return;
 
-    // Suppression de l'entrée dans la table products
     const { error } = await supabaseClient.from('products').delete().eq('id', id);
 
     if (error) {
         showStatus('⚠️ Erreur lors de la suppression.', '#f8d7da', '#842029');
     } else {
-        // Tentative de suppression du fichier image dans le storage si présent
-        if (imageName && imageName !== 'default.jpg') {
+        if (imageName && imageName !== 'default.jpg' && !imageName.startsWith('images/')) {
             await supabaseClient.storage.from('products-images').remove([imageName]);
         }
         showStatus('✓ Meuble supprimé du catalogue.', '#f8d7da', '#842029');

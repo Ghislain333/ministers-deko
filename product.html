@@ -58,9 +58,19 @@ async function fetchProduct() {
 
     document.title = `${escapeHtml(product.nom)} - MINISTER'S DEKO`;
 
-    const imageUrl = product.image.startsWith('http') 
-        ? product.image 
-        : `${SUPABASE_URL}/storage/v1/object/public/products-images/${product.image}`;
+    // Gestion correcte des images : locale vs Supabase Storage vs URL externe
+    let imageUrl = 'images/default.jpg';
+
+if (product.image) {
+    if (product.image.startsWith('http')) {
+        imageUrl = product.image;
+    } else if (product.image.startsWith('images/')) {
+        imageUrl = product.image; // Gère images/00.jpeg et images/uploads/...
+    } else {
+        // Nouvelle image téléversée sur Supabase Storage
+        imageUrl = `${SUPABASE_URL}/storage/v1/object/public/products-images/${product.image}`;
+    }
+}
 
     container.innerHTML = `
         <div style="flex: 1; min-width: 300px;">
